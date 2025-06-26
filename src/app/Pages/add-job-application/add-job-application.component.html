@@ -1,7 +1,34 @@
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h1>add application</h1>
-        </div>
-    </div>
-</div>
+<div class="container mt-5" *ngIf="jobApplication">
+    <h2>Edit Job Application</h2>
+    <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    <form (ngSubmit)="onSubmit()">
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+      <div class="mb-3">
+        <label for="company" class="form-label">Company</label>
+        <input type="text" class="form-control" id="company" [(ngModel)]="jobApplication.company" name="company">
+      </div>
+      <div class="mb-3">
+        <label for="position" class="form-label">Position</label>
+        <input type="text" class="form-control" id="position" [(ngModel)]="jobApplication.position" name="position">
+      </div>
+      <div class="mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select class="form-select" id="status" [(ngModel)]="jobApplication.status" name="status">
+          <option *ngFor="let key of getStatusKeys()" [ngValue]="statusEnum[key]">
+              {{ key.charAt(0).toLowerCase() + key.slice(1) }}
+            </option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="applicationDate" class="form-label">Date Applied</label>
+        <input type="date" class="form-control" id="applicationDate" [(ngModel)]="jobApplication.applicationDate" name="applicationDate">
+      </div>
+      <!-- Add more fields as needed -->
+      <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">Save</button>
+    </form>
+  </div>
+  <div *ngIf="!jobApplication">
+    <div class="alert alert-info">Loading...</div>
+  </div>
+  

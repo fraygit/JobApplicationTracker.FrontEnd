@@ -24,4 +24,8 @@ export class JobAppApiService {
   updateJobApplication(id: number, job: JobApplication): Observable<JobApplication> {
     return this.http.post<JobApplication>(`${this.apiUrl}/api/applications/${id}`, job);
   }
+
+  addJobApplication(job: JobApplication): Observable<JobApplication> {
+    return this.http.post<JobApplication>(`${this.apiUrl}/api/applications`, job);
+  }
 }
