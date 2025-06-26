@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { JobAppApiService } from '../../Services/job-app-api.service';
 import { JobApplication, JobApplicationStatus } from '../../Models/mobil-price.model';
+import { PagedResult } from '../../Models/page-result';
 
 @Component({
   selector: 'app-home',
@@ -13,14 +14,24 @@ import { JobApplication, JobApplicationStatus } from '../../Models/mobil-price.m
 })
 export class HomeComponent implements OnInit {
   jobApplications: JobApplication[] = [];
+  totalCount: number = 0;
+  pageSize: number = 5;
+  pageNumber: number = 1;
 
   constructor(private jobAppApiService: JobAppApiService, private router: Router) {}
 
   ngOnInit(): void {
-    this.jobAppApiService.getJobApplications().subscribe((data: JobApplication[]) => {
-      this.jobApplications = data;
+    this.loadPage(this.pageNumber);
+  }
+
+  loadPage(page: number): void {
+    this.pageNumber = page;
+    this.jobAppApiService.getJobApplications(this.pageNumber, this.pageSize).subscribe((pagedResult: PagedResult<JobApplication>) => {
+      this.jobApplications = pagedResult.results;
+      this.totalCount = pagedResult.totalCount;
+      this.pageSize = pagedResult.pageSize;
+      this.pageNumber = pagedResult.pageNumber;
     });
-    // Fetching is handled by async pipe, but you can trigger here if needed
   }
 
   editJob(id: number): void {
@@ -29,6 +40,10 @@ export class HomeComponent implements OnInit {
 
   getStatusName(status: JobApplicationStatus): string {
     return JobApplicationStatus[status];
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalCount / this.pageSize);
   }
 }
 

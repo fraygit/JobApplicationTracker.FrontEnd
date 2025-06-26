@@ -15,3 +15,4 @@ export class JobApplication {
   created!: Date;
   updated!: Date;
 }
+

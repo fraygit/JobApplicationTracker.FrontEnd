@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { JobApplication } from '../Models/mobil-price.model';
+import { PagedResult } from '../Models/page-result';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,10 @@ export class JobAppApiService {
 
   constructor(private http: HttpClient) { }
 
-  getJobApplications(): Observable<JobApplication[]> {
-    return this.http.get<JobApplication[]>(`${this.apiUrl}/api/applications`);
+  getJobApplications(pageNumber: number = 1, pageSize: number = 5): Observable<PagedResult<JobApplication>> {
+    return this.http.get<PagedResult<JobApplication>>(
+      `${this.apiUrl}/api/applications/${pageNumber}/${pageSize}`
+    );
   }
 
   getJobApplicationById(id: number): Observable<JobApplication> {
