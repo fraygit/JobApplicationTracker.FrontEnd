@@ -8,17 +8,17 @@
                   <th>Company</th>
                   <th>Position</th>
                   <th>Status</th>
-                  <th>Application Date</th>
-                  <th>ID</th>
+                  <th>Date Applied</th>
+                  <th>&nbsp;</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let job of jobApplications">
                   <td>{{ job.company }}</td>
                   <td>{{ job.position }}</td>
-                  <td>{{ job.status }}</td>
+                  <td>{{ getStatusName(job.status) }}</td>
                   <td>{{ job.applicationDate | date:'medium' }}</td>
-                  <td>{{ job.id }}</td>
+                  <td><button class="btn btn-primary" (click)="editJob(job.id)">Edit</button></td>
                 </tr>
               </tbody>
             </table>

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { JobApplication } from '../Models/mobil-price.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,11 @@ export class JobAppApiService {
 
   constructor(private http: HttpClient) { }
 
-  getJobApplications(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/api/applications`);
+  getJobApplications(): Observable<JobApplication[]> {
+    return this.http.get<JobApplication[]>(`${this.apiUrl}/api/applications`);
+  }
+
+  getJobApplicationById(id: number): Observable<JobApplication> {
+    return this.http.get<JobApplication>(`${this.apiUrl}/api/applications/${id}`);
   }
 }
