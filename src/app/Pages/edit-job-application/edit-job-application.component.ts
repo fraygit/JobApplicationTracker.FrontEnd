@@ -15,6 +15,9 @@ import { JobApplication, JobApplicationStatus } from '../../Models/mobil-price.m
 export class EditJobApplicationComponent implements OnInit {
   jobApplication!: JobApplication;
   statusEnum = JobApplicationStatus;
+  errorMessage: string | null = null;
+  successMessage: string | null = null;
+  isSubmitting = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -25,9 +28,55 @@ export class EditJobApplicationComponent implements OnInit {
     const id = Number(this.route.snapshot.paramMap.get('id'));
     if (id) {
       this.jobAppApiService.getJobApplicationById(id).subscribe(app => {
+        if (app.applicationDate) {
+          // Convert to YYYY-MM-DD if necessary
+          const date = new Date(app.applicationDate);
+          app.applicationDate = this.formatDate(date);
+        }
         this.jobApplication = app;
       });
     }
+  }
+
+  updateJobApplication(): void {
+    this.isSubmitting = true;
+    this.errorMessage = null;
+    this.successMessage = null;
+    this.jobAppApiService.updateJobApplication(this.jobApplication.id, this.jobApplication).subscribe({
+      next: (updated) => {
+        this.isSubmitting = false;
+        this.successMessage = 'Job application updated successfully!';
+        this.jobApplication = updated;
+      },
+      error: (err) => {
+        this.isSubmitting = false;
+        this.errorMessage = 'Failed to update job application. ' + err.message;
+      }
+    });
+  }
+
+  onSubmit(): void {
+    // Validate all fields
+    if (!this.jobApplication.company || !this.jobApplication.position || !this.jobApplication.status || !this.jobApplication.applicationDate) {
+      this.errorMessage = 'Please fill in all fields.';
+      this.successMessage = null;
+      return;
+    }
+    this.updateJobApplication();
+  }
+
+  formatDate(applicationDate: Date): string {
+    if (!applicationDate) return '';
+    // If it's already in YYYY-MM-DD format, return as is
+    if (/^\d{4}-\d{2}-\d{2}$/.test(applicationDate.toString())) {
+      return applicationDate.toString();
+    }
+    // Otherwise, format it
+    const date = new Date(applicationDate);
+    const year = date.getFullYear();
+    const month = ('0' + (date.getMonth() + 1)).slice(-2);
+    const day = ('0' + date.getDate()).slice(-2);
+    return `${year}-${month}-${day}`;
   }
 
   getStatusKeys(): (keyof typeof JobApplicationStatus)[] {

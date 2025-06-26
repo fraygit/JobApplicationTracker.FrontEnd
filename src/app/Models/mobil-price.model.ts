@@ -10,7 +10,7 @@ export class JobApplication {
   company!: string;
   position!: string;
   status!: JobApplicationStatus;
-  applicationDate!: Date;
+  applicationDate!: any;
   id!: number;
   created!: Date;
   updated!: Date;

@@ -20,4 +20,8 @@ export class JobAppApiService {
   getJobApplicationById(id: number): Observable<JobApplication> {
     return this.http.get<JobApplication>(`${this.apiUrl}/api/applications/${id}`);
   }
+
+  updateJobApplication(id: number, job: JobApplication): Observable<JobApplication> {
+    return this.http.post<JobApplication>(`${this.apiUrl}/api/applications/${id}`, job);
+  }
 }
