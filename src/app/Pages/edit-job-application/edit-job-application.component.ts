@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { JobAppApiService } from '../../Services/job-app-api.service';
 import { JobApplication, JobApplicationStatus } from '../../Models/mobil-price.model';
+import { formatDate } from '../../utils/date-utils';
 
 @Component({
   selector: 'app-edit-job-application',
@@ -31,7 +32,7 @@ export class EditJobApplicationComponent implements OnInit {
         if (app.applicationDate) {
           // Convert to YYYY-MM-DD if necessary
           const date = new Date(app.applicationDate);
-          app.applicationDate = this.formatDate(date);
+          app.applicationDate = formatDate(date);
         }
         this.jobApplication = app;
       });
@@ -65,19 +66,6 @@ export class EditJobApplicationComponent implements OnInit {
     this.updateJobApplication();
   }
 
-  formatDate(applicationDate: Date): string {
-    if (!applicationDate) return '';
-    // If it's already in YYYY-MM-DD format, return as is
-    if (/^\d{4}-\d{2}-\d{2}$/.test(applicationDate.toString())) {
-      return applicationDate.toString();
-    }
-    // Otherwise, format it
-    const date = new Date(applicationDate);
-    const year = date.getFullYear();
-    const month = ('0' + (date.getMonth() + 1)).slice(-2);
-    const day = ('0' + date.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
-  }
 
   getStatusKeys(): (keyof typeof JobApplicationStatus)[] {
     return Object.keys(this.statusEnum).filter(key => isNaN(Number(key))) as (keyof typeof JobApplicationStatus)[];
